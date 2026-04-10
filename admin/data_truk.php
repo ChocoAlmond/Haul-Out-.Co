@@ -11,53 +11,70 @@ $res = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Armada - Haul Out .Co</title>
     <link rel="stylesheet" href="../config/style.css">
+    <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
+    <style>
+        /* Responsive table wrapper */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        
+        @media (max-width: 768px) {
+            .table-wrapper {
+                margin: 15px -12px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="container" style="max-width: 1100px;">
-    <link rel="stylesheet" href="../config/style.css">
-    <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
     <h2>Manajemen Armada Truk</h2>
-    <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
         <a href="tambah_truk.php" class="btn btn-tambah">+ Tambah Armada</a>
         <a href="dashboard.php" class="btn" style="background: #6c757d; color: white; text-decoration: none;">Kembali</a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Plat Nomor</th>
-                <th>Merk</th>
-                <th>Kategori</th>
-                <th>Harga / Hari</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php 
-            $no = 1;
-            while($row = mysqli_fetch_assoc($res)) : 
-            ?>
-            <tr>
-                <td><?= $no++; ?></td>
-                <td><strong><?= $row['plat_nomor']; ?></strong></td>
-                <td><?= $row['merk']; ?></td>
-                <td><?= $row['nama_kategori']; ?></td>
-                <td>
-                    <span style="color: #27ae60; font-weight: bold;">
-                        Rp <?= number_format($row['harga_per_hari'], 0, ',', '.'); ?>
-                    </span>
-                </td>
-                <td>
-                    <?php 
-                        $status_class = '';
-                        if($row['status'] == 'Tersedia') $status_class = 'tersedia';
-                        elseif($row['status'] == 'Dipinjam') $status_class = 'dipinjam';
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Plat Nomor</th>
+                    <th>Merk</th>
+                    <th>Kategori</th>
+                    <th>Harga / Hari</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $no = 1;
+                while($row = mysqli_fetch_assoc($res)) : 
+                ?>
+                <tr>
+                    <td><?= $no++; ?></td>
+                    <td><strong><?= $row['plat_nomor']; ?></strong></td>
+                    <td><?= $row['merk']; ?></td>
+                    <td><?= $row['nama_kategori']; ?></td>
+                    <td>
+                        <span style="color: #27ae60; font-weight: bold;">
+                            Rp <?= number_format($row['harga_per_hari'], 0, ',', '.'); ?>
+                        </span>
+                    </td>
+                    <td>
+                        <?php 
+                            $status_class = '';
+                            if($row['status'] == 'Tersedia') $status_class = 'tersedia';
+                            elseif($row['status'] == 'Dipinjam') $status_class = 'dipinjam';
                         else $status_class = 'perbaikan'; // Pastikan CSS lu ada class perbaikan
                     ?>
                     <span class="badge <?= $status_class; ?>"><?= $row['status']; ?></span>
@@ -68,8 +85,9 @@ $res = mysqli_query($conn, $query);
                 </td>
             </tr>
             <?php endwhile; ?>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

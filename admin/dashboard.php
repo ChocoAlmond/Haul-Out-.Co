@@ -23,6 +23,7 @@ $data_pinjam = mysqli_fetch_assoc($count_pinjam);
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - Haul Out .Co</title>
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
@@ -46,6 +47,36 @@ $data_pinjam = mysqli_fetch_assoc($count_pinjam);
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-stats {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 12px;
+            }
+            .card-stat {
+                padding: 15px;
+            }
+            .card-stat h3 {
+                font-size: 1.5em;
+            }
+            .card-stat p {
+                font-size: 0.85rem;
+                margin: 0 0 8px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .grid-stats {
+                grid-template-columns: 1fr;
+            }
+            .menu-admin {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .menu-admin .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>

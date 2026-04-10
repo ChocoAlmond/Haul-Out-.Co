@@ -18,6 +18,11 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
+            padding: 20px;
+        }
+        .landing-content > div {
+            flex: 1;
+            max-width: 200px;
         }
         header {
             background: var(--primary-color);
@@ -29,6 +34,36 @@
 
         h2 {
             color: white;
+            margin: 0;
+        }
+
+        footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: gray;
+            margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            .landing-content {
+                flex-direction: column;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .landing-content > div {
+                width: 100%;
+                max-width: none;
+            }
+
+            header {
+                padding: 20px 16px;
+            }
+
+            .btn-auth {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -39,15 +74,19 @@
     </header>
 
     <div class="landing-content">
-        <div style="width: 200px;">
+        <div>
             <a href="login.php" class="btn-auth" style="display: block; text-decoration: none;">LOGIN</a>
         </div>
-        <div style="width: 200px;">
+        <div>
             <a href="registrasi.php" class="btn-auth" style="display: block; text-decoration: none; background: var(--white); color: var(--primary-color); border: 2px solid var(--primary-color);">REGISTRASI</a>
         </div>
     </div>
 
-    <footer style="padding: 20px; text-align: center; font-size: 12px; color: gray;">
+    <footer>
+        © 2026 Haul Out .Co. All rights reserved.
+    </footer>
+</body>
+</html>
         &copy; 2026 Haul Out .Co - Sistem Peminjaman Truk Terintegrasi
     </footer>
 

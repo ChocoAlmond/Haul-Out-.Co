@@ -21,9 +21,29 @@ $data_jalan = mysqli_fetch_assoc($count_jalan);
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Petugas - Haul Out .Co</title>
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
+    <style>
+        .dashboard-nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 480px) {
+            .dashboard-nav {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .dashboard-nav .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -46,7 +66,7 @@ $data_jalan = mysqli_fetch_assoc($count_jalan);
     <hr>
 
     <h3>Menu Kendali</h3>
-    <div style="display: flex; gap: 10px; margin-top: 15px;">
+    <div class="dashboard-nav">
         <a href="approval.php" class="btn btn-tambah">Persetujuan Peminjaman</a>
         <a href="laporan.php" class="btn btn-edit">Laporan Transaksi</a>
         <a href="../auth/logout.php" class="btn btn-hapus">Logout</a>
