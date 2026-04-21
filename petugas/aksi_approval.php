@@ -1,10 +1,20 @@
 <?php
 include '../config/db.php';
-$id = $_GET['id'];
-$status = $_GET['status'];
 
-// Query update status pinjam
-mysqli_query($conn, "UPDATE peminjaman SET status_approval = '$status' WHERE id_pinjam = '$id'");
+$id = intval($_GET['id'] ?? 0);
+$status = trim($_GET['status'] ?? '');
+$allowedStatuses = ['Pending', 'Disetujui', 'Ditolak', 'Selesai'];
 
-// TRIGGER di MySQL akan otomatis mengubah status TRUK menjadi 'Dipinjam'
+if ($id <= 0 || !in_array($status, $allowedStatuses, true)) {
+    header("location:dashboard.php");
+    exit;
+}
+
+$stmt = mysqli_prepare($conn, "UPDATE peminjaman SET status_approval = ? WHERE id_pinjam = ?");
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "si", $status, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
 header("location:dashboard.php");

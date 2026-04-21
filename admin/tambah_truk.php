@@ -4,16 +4,21 @@ include '../config/db.php';
 if($_SESSION['role'] != 'Admin') header("location:../index.php");
 
 if(isset($_POST['simpan'])) {
-    $plat  = $_POST['plat_nomor'];
-    $merk  = $_POST['merk'];
-    $kat   = $_POST['id_kategori'];
-    $harga = $_POST['harga_per_hari']; // Ambil data harga
+    $plat  = trim($_POST['plat_nomor'] ?? '');
+    $merk  = trim($_POST['merk'] ?? '');
+    $kat   = intval($_POST['id_kategori'] ?? 0);
+    $harga = floatval($_POST['harga_per_hari'] ?? 0);
 
-    $sql = "INSERT INTO truk (plat_nomor, merk, id_kategori, harga_per_hari, status) 
-            VALUES ('$plat', '$merk', '$kat', '$harga', 'Tersedia')";
-    
-    if(mysqli_query($conn, $sql)) {
-        header("location:data_truk.php");
+    $stmt = mysqli_prepare($conn, "INSERT INTO truk (plat_nomor, merk, id_kategori, harga_per_hari, status) VALUES (?, ?, ?, ?, 'Tersedia')");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "ssdi", $plat, $merk, $kat, $harga);
+        if (mysqli_stmt_execute($stmt)) {
+            header("location:data_truk.php");
+            exit;
+        } else {
+            echo "Error: " . mysqli_error($conn);
+        }
+        mysqli_stmt_close($stmt);
     } else {
         echo "Error: " . mysqli_error($conn);
     }

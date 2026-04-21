@@ -14,18 +14,27 @@ if(!isset($_GET['id'])) {
     exit;
 }
 
-$id_pinjam = $_GET['id'];
+$id_pinjam = intval($_GET['id']);
+if ($id_pinjam <= 0) {
+    header("location:riwayat_pinjam.php");
+    exit;
+}
 
 // 1. Ambil detail pinjaman
-$query = "SELECT p.*, t.plat_nomor, t.merk 
-          FROM peminjaman p 
-          JOIN truk t ON p.id_truk = t.id_truk 
-          WHERE p.id_pinjam = '$id_pinjam'";
-$result = mysqli_query($conn, $query);
-$data = mysqli_fetch_assoc($result);
+$stmt = mysqli_prepare($conn, "SELECT p.*, t.plat_nomor, t.merk FROM peminjaman p JOIN truk t ON p.id_truk = t.id_truk WHERE p.id_pinjam = ?");
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $id_pinjam);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+} else {
+    echo "Error: " . mysqli_error($conn);
+    exit;
+}
 
 // Jika data tidak ditemukan
-if(!$data) {
+if (!$data) {
     echo "Data peminjaman tidak ditemukan.";
     exit;
 }
@@ -34,31 +43,59 @@ $tgl_kembali_sekarang = date('Y-m-d');
 $tgl_rencana = $data['tgl_kembali_rencana'];
 
 // 2. Hitung denda pakai FUNCTION SQL
-$sql_denda = mysqli_query($conn, "SELECT hitung_denda('$tgl_rencana', '$tgl_kembali_sekarang') AS total_denda");
-$row_denda = mysqli_fetch_assoc($sql_denda);
-$denda = $row_denda['total_denda'];
+$stmt = mysqli_prepare($conn, "SELECT hitung_denda(?, ?) AS total_denda");
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "ss", $tgl_rencana, $tgl_kembali_sekarang);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row_denda = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    $denda = $row_denda['total_denda'];
+} else {
+    echo "Error: " . mysqli_error($conn);
+    exit;
+}
 
 // 3. Logika Proses Simpan
 if(isset($_POST['proses_kembali'])) {
-    $id_truk = $data['id_truk'];
-    $id_user = $_SESSION['id_user'];
+    $id_truk = intval($data['id_truk']);
+    $id_user = intval($_SESSION['id_user'] ?? 0);
     
     // Simpan ke tabel pengembalian
-    $insert = "INSERT INTO pengembalian (id_pinjam, tgl_kembali_aktual, denda) 
-               VALUES ('$id_pinjam', '$tgl_kembali_sekarang', '$denda')";
-    
-    if(mysqli_query($conn, $insert)) {
-        // Update status truk jadi 'Tersedia'
-        mysqli_query($conn, "UPDATE truk SET status = 'Tersedia' WHERE id_truk = '$id_truk'");
-        
-        // Update status peminjaman jadi 'Selesai'
-        mysqli_query($conn, "UPDATE peminjaman SET status_approval = 'Selesai' WHERE id_pinjam = '$id_pinjam'");
-        
-        // Catat ke Log Aktivitas
-        $msg_log = "Mengembalikan truk " . $data['plat_nomor'] . " dengan denda Rp " . number_format($denda, 0, ',', '.');
-        mysqli_query($conn, "INSERT INTO log_aktivitas (id_user, aktivitas) VALUES ('$id_user', '$msg_log')");
-        
-        echo "<script>alert('Berhasil dikembalikan! " . ($denda > 0 ? "Denda Anda: Rp " . number_format($denda,0,',','.') : "Tidak ada denda.") . "'); window.location='riwayat_pinjam.php';</script>";
+    $stmt = mysqli_prepare($conn, "INSERT INTO pengembalian (id_pinjam, tgl_kembali_aktual, denda) VALUES (?, ?, ?)");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "iss", $id_pinjam, $tgl_kembali_sekarang, $denda);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            
+            $stmt = mysqli_prepare($conn, "UPDATE truk SET status = 'Tersedia' WHERE id_truk = ?");
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "i", $id_truk);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
+            
+            $stmt = mysqli_prepare($conn, "UPDATE peminjaman SET status_approval = 'Selesai' WHERE id_pinjam = ?");
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "i", $id_pinjam);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
+            
+            $msg_log = "Mengembalikan truk " . $data['plat_nomor'] . " dengan denda Rp " . number_format($denda, 0, ',', '.');
+            $stmt = mysqli_prepare($conn, "INSERT INTO log_aktivitas (id_user, aktivitas) VALUES (?, ?)");
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "is", $id_user, $msg_log);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
+            
+            echo "<script>alert('Berhasil dikembalikan! " . ($denda > 0 ? "Denda Anda: Rp " . number_format($denda,0,',','.') : "Tidak ada denda.") . "'); window.location='riwayat_pinjam.php';</script>";
+        } else {
+            echo "Error: " . mysqli_error($conn);
+        }
+    } else {
+        echo "Error: " . mysqli_error($conn);
     }
 }
 ?>

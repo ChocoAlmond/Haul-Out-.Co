@@ -2,29 +2,40 @@
 session_start();
 include '../config/db.php';
 
-if($_SESSION['role'] != 'Admin') header("location:../index.php");
+if ($_SESSION['role'] != 'Admin') header("location:../index.php");
 
-$id = $_GET['id'];
+$id = intval($_GET['id'] ?? 0);
 
-if (isset($id)) {
-    // 1. Hapus dulu data di tabel pengembalian yang nyambung ke peminjaman truk ini
-    mysqli_query($conn, "DELETE FROM pengembalian WHERE id_pinjam IN (SELECT id_pinjam FROM peminjaman WHERE id_truk = '$id')");
+if ($id > 0) {
+    $stmt = mysqli_prepare($conn, "DELETE FROM pengembalian WHERE id_pinjam IN (SELECT id_pinjam FROM peminjaman WHERE id_truk = ?)");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
-    // 2. Hapus data di tabel peminjaman yang nyambung ke truk ini
-    mysqli_query($conn, "DELETE FROM peminjaman WHERE id_truk = '$id'");
+    $stmt = mysqli_prepare($conn, "DELETE FROM peminjaman WHERE id_truk = ?");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
-    // 3. Baru hapus truknya
-    $query = mysqli_query($conn, "DELETE FROM truk WHERE id_truk = '$id'");
-
-    if($query) {
-        echo "<script>
-                alert('Truk dan semua riwayatnya berhasil dihapus!');
-                window.location='data_truk.php';
-              </script>";
-    } else {
-        echo "Error: " . mysqli_error($conn);
+    $stmt = mysqli_prepare($conn, "DELETE FROM truk WHERE id_truk = ?");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        if (mysqli_stmt_execute($stmt)) {
+            echo "<script>
+                    alert('Truk dan semua riwayatnya berhasil dihapus!');
+                    window.location='data_truk.php';
+                  </script>";
+        } else {
+            echo "Error: " . mysqli_error($conn);
+        }
+        mysqli_stmt_close($stmt);
     }
 } else {
     header("location:data_truk.php");
+    exit;
 }
 ?>

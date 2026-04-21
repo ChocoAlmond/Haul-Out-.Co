@@ -4,29 +4,42 @@ include '../config/db.php';
 echo"<h2>Memprosess Registrasi...</h2>";
 
 if (isset($_POST['register'])) {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $role     = mysqli_real_escape_string($conn, $_POST['role']);
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $role     = trim($_POST['role'] ?? '');
 
-    // 1. Cek apakah username sudah ada biar nggak duplikat
-    $cek_user = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
-    
-    if (mysqli_num_rows($cek_user) > 0) {
-        // Kalau sudah ada, balikkan ke halaman regis dengan pesan error
-        header("location:../registrasi.php?pesan=gagal");
+    $stmt = mysqli_prepare($conn, "SELECT 1 FROM users WHERE username = ?");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        if (mysqli_stmt_num_rows($stmt) > 0) {
+            mysqli_stmt_close($stmt);
+            header("location:../registrasi.php?pesan=gagal");
+            exit;
+        }
+
+        mysqli_stmt_close($stmt);
     } else {
-        // 2. Masukkan data ke database
-        $query = "INSERT INTO users (username, password, role) VALUES ('$username', '$password', '$role')";
-        
-        if (mysqli_query($conn, $query)) {
-            // Kalau berhasil, arahkan ke login
+        echo "Error: " . mysqli_error($conn);
+        exit;
+    }
+
+    $stmt = mysqli_prepare($conn, "INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "sss", $username, $password, $role);
+        if (mysqli_stmt_execute($stmt)) {
             echo "<script>alert('Registrasi Berhasil! Silakan Login.'); window.location='../login.php';</script>";
         } else {
-            // Kalau error database
             echo "Error: " . mysqli_error($conn);
         }
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "Error: " . mysqli_error($conn);
     }
 } else {
     header("location:../registrasi.php");
+    exit;
 }
 ?>

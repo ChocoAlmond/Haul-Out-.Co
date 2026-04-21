@@ -3,29 +3,44 @@ session_start();
 include '../config/db.php';
 if($_SESSION['role'] != 'Admin') header("location:../index.php");
 
-$id = $_GET['id'];
-$data_truk = mysqli_query($conn, "SELECT * FROM truk WHERE id_truk = '$id'");
-$truk = mysqli_fetch_assoc($data_truk);
+$id = intval($_GET['id'] ?? 0);
+$truk = null;
+
+if ($id > 0) {
+    $stmt = mysqli_prepare($conn, "SELECT * FROM truk WHERE id_truk = ?");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $truk = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+    }
+}
+
+if (!$truk) {
+    header("location:data_truk.php");
+    exit;
+}
 
 if(isset($_POST['update'])) {
-    $plat  = $_POST['plat_nomor'];
-    $merk  = $_POST['merk'];
-    $kat   = isset($_POST['id_kategori']) ? $_POST['id_kategori'] : '';
-    $status = $_POST['status'];
-    $harga = $_POST['harga_per_hari']; // Ambil data harga
+    $plat   = trim($_POST['plat_nomor'] ?? '');
+    $merk   = trim($_POST['merk'] ?? '');
+    $kat    = intval($_POST['id_kategori'] ?? 0);
+    $status = trim($_POST['status'] ?? '');
+    $harga  = floatval($_POST['harga_per_hari'] ?? 0);
 
-    if($kat != '') {
-        // Query Update lengkap dengan harga
-        $sql = "UPDATE truk SET 
-                plat_nomor='$plat', 
-                merk='$merk', 
-                id_kategori='$kat', 
-                harga_per_hari='$harga', 
-                status='$status' 
-                WHERE id_truk='$id'";
-        
-        if(mysqli_query($conn, $sql)) {
-            echo "<script>alert('Berhasil Update!'); window.location='data_truk.php';</script>";
+    if ($kat > 0) {
+        $stmt = mysqli_prepare($conn, "UPDATE truk SET plat_nomor = ?, merk = ?, id_kategori = ?, harga_per_hari = ?, status = ? WHERE id_truk = ?");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "ssidsi", $plat, $merk, $kat, $harga, $status, $id);
+            if (mysqli_stmt_execute($stmt)) {
+                echo "<script>alert('Berhasil Update!'); window.location='data_truk.php';</script>";
+                mysqli_stmt_close($stmt);
+                exit;
+            } else {
+                echo "Gagal Update: " . mysqli_error($conn);
+            }
+            mysqli_stmt_close($stmt);
         } else {
             echo "Gagal Update: " . mysqli_error($conn);
         }
