@@ -19,10 +19,16 @@ $result = mysqli_query($conn, $query);
     <title>Daftar Truk Tersedia - Haul Out CO</title>
     <link rel="stylesheet" href="../config/style.css">
 </head>
-<body>
+<body class="page-shell">
     <div class="container">
-        <h2>Daftar Truk Tersedia</h2>
-        <p style="color: var(--gray-500); margin-bottom: 30px; font-size: 1.05rem;">Pilih truk yang sesuai dengan kebutuhan Anda</p>
+        <div class="panel-card">
+            <div class="panel-body">
+                <div class="section-header">
+                    <div>
+                        <h1 class="page-title">Daftar Truk Tersedia</h1>
+                        <p class="page-subtitle">Pilih truk yang sesuai dengan kebutuhan Anda, lalu ajukan peminjaman dengan cepat.</p>
+                    </div>
+                </div>
         
         <div class="cards-grid">
             <?php while($row = mysqli_fetch_assoc($result)) { ?>
@@ -51,8 +57,8 @@ $result = mysqli_query($conn, $query);
                         <form action="proses_pinjam.php" method="POST">
                             <input type="hidden" name="id_truk" value="<?= $row['id_truk'] ?>">
                             
-                            <label style="margin-bottom: 8px;">📅 Rencana Tanggal Pengembalian </label>
-                            <input type="date" name="tgl_kembali_rencana" required style="margin-bottom: 12px;">
+                            <label>📅 Rencana Tanggal Pengembalian</label>
+                            <input type="date" name="tgl_kembali_rencana" required>
                             
                             <button type="submit" class="btn btn-tambah">Ajukan Peminjaman</button>
                         </form>

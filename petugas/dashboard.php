@@ -25,51 +25,36 @@ $data_jalan = mysqli_fetch_assoc($count_jalan);
     <title>Dashboard Petugas - Haul Out .Co</title>
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
-    <style>
-        .dashboard-nav {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        @media (max-width: 480px) {
-            .dashboard-nav {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .dashboard-nav .btn {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
-<body>
+<body class="page-shell">
 
 <div class="container">
-    <p>Haul Out .Co</p>
-    <h2>Panel Petugas Operasional</h2>
-    <p>Halo <strong><?= $_SESSION['username']; ?></strong>, selamat bertugas! Pantau terus pengajuan driver di bawah ini.</p>
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Dashboard Petugas</h1>
+                    <p class="page-subtitle">Halo <strong><?= $_SESSION['username']; ?></strong>, pantau pengajuan dan kondisi armada secara real-time.</p>
+                </div>
+            </div>
 
-    <div class="grid-stats">
-        <div class="card-stat" style="background: #f39c12;">
+            <div class="grid-stats">
+        <div class="card-stat card-stat--warning">
             <p>Butuh Persetujuan</p>
             <h3><?= $data_pending['total']; ?></h3>
         </div>
-        <div class="card-stat" style="background: #27ae60;">
+        <div class="card-stat card-stat--success">
             <p>Truk Sedang Jalan</p>
             <h3><?= $data_jalan['total']; ?></h3>
         </div>
-    </div>
+            </div>
 
-    <hr>
-
-    <h3>Menu Kendali</h3>
-    <div class="dashboard-nav">
+            <div class="page-actions">
         <a href="approval.php" class="btn btn-tambah">Persetujuan Peminjaman</a>
         <a href="laporan.php" class="btn btn-edit">Laporan Transaksi</a>
         <a href="../auth/logout.php" class="btn btn-hapus">Logout</a>
+            </div>
+        </div>
     </div>
 </div>
 

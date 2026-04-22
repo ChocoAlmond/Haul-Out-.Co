@@ -18,31 +18,22 @@ $res = mysqli_query($conn, $query);
     <title>Data Armada - Haul Out .Co</title>
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
-    <style>
-        /* Responsive table wrapper */
-        .table-wrapper {
-            overflow-x: auto;
-            margin: 20px 0;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-        
-        @media (max-width: 768px) {
-            .table-wrapper {
-                margin: 15px -12px;
-            }
-        }
-    </style>
 </head>
-<body>
-<div class="container" style="max-width: 1100px;">
-    <h2>Manajemen Armada Truk</h2>
-    <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <a href="tambah_truk.php" class="btn btn-tambah">+ Tambah Armada</a>
-        <a href="dashboard.php" class="btn" style="background: #6c757d; color: white; text-decoration: none;">Kembali</a>
-    </div>
-
-    <div class="table-wrapper">
+<body class="page-shell">
+<div class="container">
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Manajemen Armada Truk</h1>
+                    <p class="page-subtitle">Kelola daftar truk, update status, dan atur armada secara efisien.</p>
+                </div>
+                <div class="page-actions">
+                    <a href="tambah_truk.php" class="btn btn-tambah">+ Tambah Armada</a>
+                    <a href="dashboard.php" class="btn btn-secondary">Kembali</a>
+                </div>
+            </div>
+            <div class="table-wrapper">
         <table>
             <thead>
                 <tr>

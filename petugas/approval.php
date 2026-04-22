@@ -11,12 +11,27 @@ $query = "SELECT peminjaman.*, users.username, truk.plat_nomor
           WHERE status_approval = 'Pending'";
 $result = mysqli_query($conn, $query);
 ?>
-
-<link rel="stylesheet" href="../config/style.css">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persetujuan Peminjaman - Haul Out .Co</title>
+    <link rel="stylesheet" href="../config/style.css">
+    <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
+</head>
+<body class="page-shell">
 <div class="container">
-<p>Haul Out .Co</p>
-<h2>Daftar Persetujuan Peminjaman Truk</h2>
-<table border="1">
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Persetujuan Peminjaman</h1>
+                    <p class="page-subtitle">Kelola pengajuan peminjaman yang masih menunggu keputusan.</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
     <tr>
         <th>Peminjam</th>
         <th>Truk</th>
@@ -34,6 +49,13 @@ $result = mysqli_query($conn, $query);
         </td>
     </tr>
     <?php endwhile; ?>
-</table>
-<a href="dashboard.php" class="btn btn-tambah">Kembali ke Dashboard</a>
+                </table>
+            </div>
+            <div class="page-actions">
+                <a href="dashboard.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+            </div>
+        </div>
+    </div>
 </div>
+</body>
+</html>

@@ -108,33 +108,42 @@ if(isset($_POST['proses_kembali'])) {
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
 </head>
-<body>
+<body class="page-shell">
 <div class="container">
-    <p>Haul Out .Co</p>
-    <h2>Konfirmasi Pengembalian Truk</h2>
-    
-    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; line-height: 1.6;">
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Konfirmasi Pengembalian</h1>
+                    <p class="page-subtitle">Pastikan detail pengembalian benar sebelum menyelesaikan proses.</p>
+                </div>
+            </div>
+
+            <div class="detail-panel">
         <p><strong>Plat Nomor:</strong> <?= $data['plat_nomor']; ?></p>
         <p><strong>Merk Unit:</strong> <?= $data['merk']; ?></p>
         <p><strong>Tanggal Pinjam:</strong> <?= $data['tgl_pinjam']; ?></p>
         <p><strong>Jatuh Tempo:</strong> <?= $data['tgl_kembali_rencana']; ?></p>
         <p><strong>Tanggal Kembali:</strong> <?= $tgl_kembali_sekarang; ?></p>
         <hr>
-        <h3 style="color: <?= $denda > 0 ? '#e74c3c' : '#27ae60'; ?>;">
+        <h3 style="font-size: 1.6rem; color: <?= $denda > 0 ? '#fb7185' : '#2dd4bf'; ?>;">
             Total Denda: Rp <?= number_format($denda, 0, ',', '.'); ?>
         </h3>
         <?php if($denda > 0): ?>
-            <p style="color: #e74c3c; font-size: 13px;">*Terlambat mengembalikan akan dikenakan denda sesuai kebijakan sistem.</p>
+            <p class="alert alert-danger">*Terlambat mengembalikan akan dikenakan denda sesuai kebijakan sistem.</p>
         <?php else: ?>
-            <p style="color: #27ae60; font-size: 13px;">Tepat waktu! Tidak ada denda.</p>
+            <p class="alert alert-success">Tepat waktu! Tidak ada denda.</p>
         <?php endif; ?>
     </div>
 
     <form method="POST">
-        <button type="submit" name="proses_kembali" class="btn btn-hapus" style="width: 100%; font-size: 16px;">Selesaikan Pengembalian</button>
-        <br><br>
-        <center><a href="riwayat_pinjam.php" style="color: #7f8c8d; text-decoration: none;">← Batal</a></center>
+        <button type="submit" name="proses_kembali" class="btn btn-hapus">Selesaikan Pengembalian</button>
     </form>
+    <div class="page-actions" style="margin-top: 20px;">
+        <a href="riwayat_pinjam.php" class="btn btn-secondary">← Batal</a>
+    </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

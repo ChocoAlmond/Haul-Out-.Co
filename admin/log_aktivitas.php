@@ -17,12 +17,18 @@ $result = mysqli_query($conn, $query);
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
 </head>
-<body>
+<body class="page-shell">
 <div class="container">
-    <p>Haul Out .Co</p>
-    <h2>Log Aktivitas Pengguna</h2>
-
-    <table style="margin-top: 20px;">
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Log Aktivitas</h1>
+                    <p class="page-subtitle">Catatan aktivitas pengguna dan aksi sistem yang terekam secara real-time.</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
         <thead>
             <tr>
                 <th>Waktu</th>
@@ -39,8 +45,13 @@ $result = mysqli_query($conn, $query);
             </tr>
             <?php endwhile; ?>
         </tbody>
-    </table>
-    <a href="dashboard.php" class="btn btn-tambah">Kembali ke Dashboard</a>
+                </table>
+            </div>
+            <div class="page-actions">
+                <a href="dashboard.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

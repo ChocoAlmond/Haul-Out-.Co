@@ -6,89 +6,34 @@
     <title>Haul Out .Co - Welcome</title>
     <link rel="stylesheet" href="config/style.css">
     <link rel="icon" type="image/x-icon" href="HaulOut.ico">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .landing-content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            padding: 20px;
-        }
-        .landing-content > div {
-            flex: 1;
-            max-width: 200px;
-        }
-        header {
-            background: var(--primary-color);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            color: white;
-            margin: 0;
-        }
-
-        footer {
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: gray;
-            margin-top: auto;
-        }
-
-        @media (max-width: 600px) {
-            .landing-content {
-                flex-direction: column;
-                gap: 12px;
-                padding: 16px;
-            }
-
-            .landing-content > div {
-                width: 100%;
-                max-width: none;
-            }
-
-            header {
-                padding: 20px 16px;
-            }
-
-            .btn-auth {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
+    <div class="hero-page container">
+        <header class="hero-header">
+            <div class="brand">Haul Out .Co</div>
+            <div class="nav-note">Sistem Peminjaman Truk Terintegrasi</div>
+        </header>
 
-    <header>
-        <h2>HAUL OUT .CO</h2>
-    </header>
+        <main class="hero-content">
+            <section class="hero-copy">
+                <span class="eyebrow">Dashboard Armada Modern</span>
+                <h1 class="hero-title">Kelola peminjaman truk dengan tampilan baru yang cerdas dan dinamis.</h1>
+                <p>Masuk untuk melihat armada, mengatur peminjaman, dan memantau aktivitas dengan antarmuka baru yang bersih, tajam, dan mudah digunakan.</p>
+                <div class="hero-actions">
+                    <a href="login.php" class="btn btn-primary">Login</a>
+                    <a href="registrasi.php" class="btn btn-secondary">Registrasi</a>
+                </div>
+            </section>
 
-    <div class="landing-content">
-        <div>
-            <a href="login.php" class="btn-auth" style="display: block; text-decoration: none;">LOGIN</a>
-        </div>
-        <div>
-            <a href="registrasi.php" class="btn-auth" style="display: block; text-decoration: none; background: var(--white); color: var(--primary-color); border: 2px solid var(--primary-color);">REGISTRASI</a>
-        </div>
+            <aside class="hero-visual">
+                <div class="hero-card">
+                    <h3>Mulai sekarang</h3>
+                    <p>Semua fitur Haul Out .Co tersedia dalam desain yang lebih modern: navigasi terang, formulir elegan, dan tampilan data yang fokus pada produktivitas.</p>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="site-footer">© 2026 Haul Out .Co. All rights reserved.</footer>
     </div>
-
-    <footer>
-        © 2026 Haul Out .Co. All rights reserved.
-    </footer>
-</body>
-</html>
-        &copy; 2026 Haul Out .Co - Sistem Peminjaman Truk Terintegrasi
-    </footer>
-
 </body>
 </html>

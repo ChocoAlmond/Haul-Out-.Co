@@ -8,15 +8,18 @@ if($_SESSION['role'] != 'Peminjam') {
     exit;
 }
 
-$id_user = $_SESSION['id_user'];
+$id_user = intval($_SESSION['id_user'] ?? 0);
 
 // Query untuk mengambil riwayat pinjam user ini (Relasi ke tabel truk)
-$query = "SELECT p.*, t.plat_nomor, t.merk 
-          FROM peminjaman p 
-          JOIN truk t ON p.id_truk = t.id_truk 
-          WHERE p.id_user = '$id_user' 
-          ORDER BY p.id_pinjam DESC";
-$result = mysqli_query($conn, $query);
+$stmt = mysqli_prepare($conn, "SELECT p.*, t.plat_nomor, t.merk FROM peminjaman p JOIN truk t ON p.id_truk = t.id_truk WHERE p.id_user = ? ORDER BY p.id_pinjam DESC");
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $id_user);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
+} else {
+    $result = mysqli_query($conn, "SELECT p.*, t.plat_nomor, t.merk FROM peminjaman p JOIN truk t ON p.id_truk = t.id_truk WHERE p.id_user = $id_user ORDER BY p.id_pinjam DESC");
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,13 +30,19 @@ $result = mysqli_query($conn, $query);
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
 </head>
-<body>
+<body class="page-shell">
 
 <div class="container">
-    <p>Haul Out .Co</p>
-    <h2>Riwayat Peminjaman Saya</h2>
-    
-    <table style="margin-top: 20px;">
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Riwayat Peminjaman Saya</h1>
+                    <p class="page-subtitle">Lihat status semua peminjamanmu, dari pending sampai selesai.</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
         <thead>
             <tr>
                 <th>No</th>
@@ -67,9 +76,9 @@ $result = mysqli_query($conn, $query);
                     <?php if($status == 'Disetujui'): ?>
                         <a href="kembalikan.php?id=<?= $row['id_pinjam']; ?>" class="btn btn-hapus">Kembalikan</a>
                     <?php elseif($status == 'Selesai'): ?>
-                        <span style="color: gray;">Sudah Dikembalikan</span>
+                        <span class="text-muted">Sudah Dikembalikan</span>
                     <?php else: ?>
-                        <small>Menunggu ACC</small>
+                        <small class="text-muted">Menunggu ACC</small>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -77,12 +86,17 @@ $result = mysqli_query($conn, $query);
             
             <?php if(mysqli_num_rows($result) == 0): ?>
             <tr>
-                <td colspan="6" style="text-align: center;">Belum ada riwayat peminjaman.</td>
+                <td colspan="6" class="text-center">Belum ada riwayat peminjaman.</td>
             </tr>
             <?php endif; ?>
         </tbody>
-    </table>
-    <a href="dashboard.php" class="btn btn-tambah">Kembali ke Dashboard</a>
+                </table>
+            </div>
+            <div class="page-actions">
+                <a href="dashboard.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

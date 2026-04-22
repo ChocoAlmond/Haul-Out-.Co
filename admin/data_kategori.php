@@ -5,8 +5,15 @@ if($_SESSION['role'] != 'Admin') header("location:../index.php");
 
 // Proses Tambah Kategori
 if(isset($_POST['tambah'])){
-    $nama = mysqli_real_escape_string($conn, $_POST['nama_kategori']);
-    mysqli_query($conn, "INSERT INTO kategori_truk (nama_kategori) VALUES ('$nama')");
+    $nama = trim($_POST['nama_kategori'] ?? '');
+    if ($nama !== '') {
+        $stmt = mysqli_prepare($conn, "INSERT INTO kategori_truk (nama_kategori) VALUES (?)");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $nama);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        }
+    }
     header("location:data_kategori.php");
 }
 
@@ -19,16 +26,20 @@ $result = mysqli_query($conn, "SELECT * FROM kategori_truk");
     <title>Kelola Kategori</title>
     <link rel="stylesheet" href="../config/style.css">
 </head>
-<body>
+<body class="page-shell">
 <div class="container">
-    <link rel="stylesheet" href="../config/style.css">
-    <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
-    <h2>Master Kategori Truk</h2>
-    
-    <form method="POST" style="margin: 20px 0;">
-        <input type="text" name="nama_kategori" placeholder="Nama Kategori Baru" required style="padding: 10px; width: 250px;">
-        <button type="submit" name="tambah" class="btn btn-tambah">Tambah Kategori</button>
-    </form>
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Master Kategori Truk</h1>
+                    <p class="page-subtitle">Tambahkan dan kelola kategori truk untuk memudahkan pencarian armada.</p>
+                </div>
+            </div>
+            <form method="POST" class="form-inline">
+                <input type="text" name="nama_kategori" placeholder="Nama Kategori Baru" required>
+                <button type="submit" name="tambah" class="btn btn-tambah">Tambah Kategori</button>
+            </form>
 
     <table>
         <thead>

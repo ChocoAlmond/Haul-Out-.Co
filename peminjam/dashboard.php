@@ -21,41 +21,26 @@ $total_pinjam = mysqli_num_rows($cek_pinjam);
     <title>Dashboard Peminjam</title>
     <link rel="stylesheet" href="../config/style.css">
     <link rel="icon" type="image/x-icon" href="../HaulOut.ico">
-    <style>
-        .dashboard-nav {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        @media (max-width: 480px) {
-            .dashboard-nav {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .dashboard-nav .btn {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
-<body>
+<body class="page-shell">
 <div class="container">
-    <p>Haul Out .Co</p>
-    <h2>Selamat Datang, <?= $_SESSION['username']; ?>!</h2>
-    <p>Status kamu saat ini sedang meminjam <strong><?= $total_pinjam; ?></strong> truk.</p>
-    
-    <?php if($total_pinjam > 0) { ?>
-    <div style="margin-top: 20px;">
+    <div class="panel-card">
+        <div class="panel-body">
+            <div class="section-header">
+                <div>
+                    <h1 class="page-title">Dashboard Peminjam</h1>
+                    <p class="page-subtitle">Halo <strong><?= $_SESSION['username']; ?></strong>, kamu sedang meminjam <strong><?= $total_pinjam; ?></strong> truk saat ini.</p>
+                </div>
+            </div>
+            <?php if($total_pinjam > 0) { ?>
+            <div class="panel-block">
         <h3>📦 Truk yang Sedang Dipinjam</h3>
         <div class="cards-grid">
             <?php while($truck = mysqli_fetch_assoc($cek_pinjam)) { ?>
                 <div class="truck-card">
                     <div class="truck-card-header">
                         <div class="truck-card-title"><?= htmlspecialchars($truck['plat_nomor']) ?></div>
-                        <span class="badge tersedia" style="background-color: #4CAF50;">Dipinjam</span>
+                        <span class="badge dipinjam">Dipinjam</span>
                     </div>
                     
                     <div class="truck-card-info">
@@ -91,6 +76,8 @@ $total_pinjam = mysqli_num_rows($cek_pinjam);
         <a href="kembalikan.php" class="btn btn-tambah">Pengembalian</a>
         <a href="riwayat_pinjam.php" class="btn btn-edit">Riwayat Peminjaman</a>
         <a href="../auth/logout.php" class="btn btn-hapus">Logout</a>
+            </div>
+        </div>
     </div>
 </div>
 </body>
